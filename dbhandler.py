@@ -53,9 +53,11 @@ def save_rule(serverName, keyword, response):
 
 
 def get_rules_for_server(serverName):
+    serverName = b(serverName)
+
     db_connection = sqlite3.connect(f'./rules.db')
     db_cursor = db_connection.cursor()
-    db_cursor.execute("SELECT * FROM rules WHERE serverName = ", (serverName,))
+    db_cursor.execute("SELECT * FROM rules WHERE serverName = ?", (serverName,))
     data = db_cursor.fetchall()
     db_connection.close()
 

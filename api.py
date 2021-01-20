@@ -20,10 +20,9 @@ def set_rule(message):
     if save_rule(message.guild.name, keyword, response) != 0:
         return "failed to set rule: '{keyword}', '{response}'"
 
+
+    print(f"rule: '{keyword}', '{response}' has been set!")
     return f"rule: '{keyword}', '{response}' has been set!"
-
-
-
 
 
 
@@ -34,3 +33,7 @@ def get_response(message):
     rules = get_rules_for_server(serverName)
 
     print(rules)
+    for rule in rules:
+        print(rule)
+        if rule['keyword'] in message.content:
+            return rule['response']
