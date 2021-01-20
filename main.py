@@ -3,8 +3,9 @@ import discord
 import sqlite3
 from tendo import singleton
 
-from api import get_response
 from api import set_rule
+from api import remove_rule
+from api import get_response
 
 client = discord.Client()
 token = 'ODAxMzc3MDk2NzcyNzQ3MzI3.YAfylA.7fE4zp0h2wsQU5fjUCKf36Db0Ts'
@@ -21,9 +22,15 @@ async def on_message(message):
         res = set_rule(message)
         return await message.channel.send(res)
 
-    else:
-        response = get_response(message)
+    prefix = '!remove'
+    if message.content[:len(prefix)] == prefix:
+        res = remove_rule(message)
+        return await message.channel.send(res)
+
+    response = get_response(message)
+    if response:
         return await message.channel.send(response)
+    return
 
 
 

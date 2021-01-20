@@ -72,3 +72,18 @@ def get_rules_for_server(serverName):
 
     return json_data
 
+
+def delete_rule(serverName, keyword):
+    serverName = b(serverName)
+    keyword = b(keyword)
+
+    try:
+        db_connection = sqlite3.connect(f'./rules.db')
+        db_cursor = db_connection.cursor()
+        db_cursor.execute("DELETE FROM rules WHERE serverName = ? AND keyword = ?", (serverName, keyword,))
+        db_connection.commit()
+        db_connection.close()
+        return "deleted keyword: "+d(keyword)
+    except:
+        return "failed to remove keyword: "+d(keyword)
+
