@@ -80,3 +80,25 @@ def get_rules(message):
 
 
 
+
+def get_help():
+    Help = "       **help menu for bot:**\n\n"
+    Help += "set new rule:\n"
+    Help += "```\n"
+    Help += "  //rule <keyword> , <response>\n"
+    Help += "```\n"
+    Help += "check set rules:\n"
+    Help += "```\n"
+    Help += "  //rules\n"
+    Help += "```\n"
+    Help += "remove rule:\n"
+    Help += "```\n"
+    Help += "  //remove <keyword>\n"
+    Help += "```\n"
+    Help += "help menu:\n"
+    Help += "```\n"
+    Help += "  //help\n"
+    Help += "```\n"
+
+    return Help
+

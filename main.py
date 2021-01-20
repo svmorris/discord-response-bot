@@ -3,6 +3,7 @@ import discord
 import sqlite3
 from tendo import singleton
 
+from api import get_help
 from api import set_rule
 from api import get_rules
 from api import remove_rule
@@ -18,21 +19,30 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    prefix = '//rule '
-    if message.content[:len(prefix)] == prefix:
-        res = set_rule(message)
-        return await message.channel.send(res)
-
-    prefix = '//remove '
-    if message.content[:len(prefix)] == prefix:
-        res = remove_rule(message)
-        return await message.channel.send(res)
 
     prefix = '//rules'
     if message.content[:len(prefix)] == prefix:
         res = get_rules(message)
-        print('res: ',res , type(res))
         return await message.channel.send(res)
+
+
+    prefix = '//rule'
+    if message.content[:len(prefix)] == prefix:
+        res = set_rule(message)
+        return await message.channel.send(res)
+
+
+    prefix = '//remove'
+    if message.content[:len(prefix)] == prefix:
+        res = remove_rule(message)
+        return await message.channel.send(res)
+
+
+    prefix = '//help'
+    if message.content[:len(prefix)] == prefix:
+        res = get_help()
+        return await message.channel.send(res)
+
 
     response = get_response(message)
     if response:
