@@ -7,7 +7,7 @@ def set_rule(message):
     text = message.content
 
     # remove prefix from message
-    text = text[len("!rule "):]
+    text = text[len("//rule "):]
 
     # split by separating commas
     text = text.split(",")
@@ -48,7 +48,7 @@ def remove_rule(message):
     serverName = message.guild.name
 
     # remove prefix from message
-    text = text[len("!remove "):]
+    text = text[len("//remove "):]
     text = text.strip(" ")
 
     # get all rules on this server
@@ -62,4 +62,21 @@ def remove_rule(message):
             return response
 
     return "nothing to remove! :)"
+
+
+def get_rules(message):
+    serverName = message.guild.name
+
+    rules = get_rules_for_server(serverName)
+
+    response = ''
+    for rule in rules:
+        response += "**"+ rule['keyword'] + "**: " + rule['response'] + "\n"
+
+    if len(response) > 1:
+        return response
+    else:
+        return "no rules have been set yet"
+
+
 
