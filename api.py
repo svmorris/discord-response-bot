@@ -1,6 +1,25 @@
+import re
+
 from dbhandler import save_rule
 from dbhandler import delete_rule
 from dbhandler import get_rules_for_server
+
+
+## internal, escape chars
+def escape(a):
+    a = re.sub("`", "", a)
+    a = re.sub("\*", "", a)
+    a = re.sub("_", "", a)
+    print(a)
+    return a
+
+# make sure 2k chars limit is not passed
+def limit(a):
+    if len(a) > 2000:
+        return "could not send message because it longer than 2000 characters :("
+
+    return a
+
 
 
 def set_rule(message):
@@ -23,7 +42,7 @@ def set_rule(message):
 
 
     print(f"rule: '{keyword}', '{response}' has been set!")
-    return f"rule: '{keyword}', '{response}' has been set!"
+    return limit(f"rule: '{keyword}', '{response}' has been set!")
 
 
 
@@ -33,11 +52,10 @@ def get_response(message):
 
     rules = get_rules_for_server(serverName)
 
-    print(rules)
     for rule in rules:
-        print(rule)
         if rule['keyword'] in message.content:
-            return rule['response']
+            print(rule)
+            return limit(rule['response'])
 
     return False
 
@@ -54,12 +72,11 @@ def remove_rule(message):
     # get all rules on this server
     rules = get_rules_for_server(serverName)
 
-    print(rules)
     for rule in rules:
-        print(rule)
         if rule['keyword'] in text:
+            print(rule)
             response = delete_rule(serverName, rule['keyword'])
-            return response
+            return limit(response)
 
     return "nothing to remove! :)"
 
@@ -71,10 +88,18 @@ def get_rules(message):
 
     response = ''
     for rule in rules:
-        response += "**"+ rule['keyword'] + "**: " + rule['response'] + "\n"
+        key = rule['keyword']
+        res = rule['response']
+
+        if len(key) > 50:
+            key = key[:50] + "..."
+        if len(res) > 20:
+            res= res[:20] + "..."
+
+        response += escape(key) + f": ```\n" + escape(res) + "\n``` \n"
 
     if len(response) > 1:
-        return response
+        return limit(response)
     else:
         return "no rules have been set yet"
 

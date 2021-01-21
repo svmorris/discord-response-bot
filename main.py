@@ -20,26 +20,29 @@ async def on_message(message):
         return
 
 
+    found = False
+    res = ''
+
     prefix = '//rules'
-    if message.content[:len(prefix)] == prefix:
+    if message.content[:len(prefix)] == prefix and not found:
         res = get_rules(message)
         return await message.channel.send(res)
 
 
     prefix = '//rule'
-    if message.content[:len(prefix)] == prefix:
+    if message.content[:len(prefix)] == prefix and not found:
         res = set_rule(message)
         return await message.channel.send(res)
 
 
     prefix = '//remove'
-    if message.content[:len(prefix)] == prefix:
+    if message.content[:len(prefix)] == prefix and not found:
         res = remove_rule(message)
         return await message.channel.send(res)
 
 
     prefix = '//help'
-    if message.content[:len(prefix)] == prefix:
+    if message.content[:len(prefix)] == prefix and not found:
         res = get_help()
         return await message.channel.send(res)
 
@@ -47,9 +50,6 @@ async def on_message(message):
     response = get_response(message)
     if response:
         return await message.channel.send(response)
-    return
-
-
 
 
 if __name__ == "__main__":
