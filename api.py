@@ -10,7 +10,6 @@ def escape(a):
     a = re.sub("`", "", a)
     a = re.sub("\*", "", a)
     a = re.sub("_", "", a)
-    print(a)
     return a
 
 # make sure 2k chars limit is not passed
@@ -22,69 +21,58 @@ def limit(a):
 
 
 
-def set_rule(message):
-    text = message.content
-
-    # remove prefix from message
-    text = text[len("//rule "):]
-
+def set_rule(text, guild_id):
+    text = text.strip(" ")
     # split by separating commas
     text = text.split(",")
 
-    if len(text) != 2:
+    if len(text) < 2:
         return "failed to set rule, wrong number of arguments supplied (2 needed)"
 
-    keyword = text[0].strip(" ")
-    response = text[1].strip(" ")
+    keyword = text[0]
+    response = ','.join(text[1:])
 
-    if save_rule(message.guild.name, keyword, response) != 0:
+
+    if save_rule(guild_id, keyword, response) != 0:
         return "failed to set rule: '{keyword}', '{response}'"
 
 
-    print(f"rule: '{keyword}', '{response}' has been set!")
     return limit(f"rule: '{keyword}', '{response}' has been set!")
 
 
 
 
 def get_response(message):
-    serverName = message.guild.name
+    serverId = message.guild.id
 
-    rules = get_rules_for_server(serverName)
+    rules = get_rules_for_server(serverId)
 
     for rule in rules:
-        if rule['keyword'] in message.content:
-            print(rule)
+        if rule['keyword'].upper() in message.content.upper():
             return limit(rule['response'])
 
     return False
 
 
 
-def remove_rule(message):
-    text = message.content
-    serverName = message.guild.name
-
-    # remove prefix from message
-    text = text[len("//remove "):]
+def remove_rule(text, serverId):
     text = text.strip(" ")
 
     # get all rules on this server
-    rules = get_rules_for_server(serverName)
+    rules = get_rules_for_server(serverId)
 
     for rule in rules:
         if rule['keyword'] in text:
-            print(rule)
-            response = delete_rule(serverName, rule['keyword'])
+            response = delete_rule(serverId, rule['keyword'])
             return limit(response)
 
     return "nothing to remove! :)"
 
 
-def get_rules(message):
-    serverName = message.guild.name
+def get_rules(text, serverId):
+    text = text.strip(" ")
 
-    rules = get_rules_for_server(serverName)
+    rules = get_rules_for_server(serverId)
 
     response = ''
     for rule in rules:

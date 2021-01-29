@@ -4,10 +4,10 @@ import os
 
 # encode/decode shit to stop any sort of injection
 def b(a):
-    return base64.b64encode(a.encode('utf-8')).decode('utf-8')
+    return base64.b64encode(str(a).encode('utf-8')).decode('utf-8')
 
 def d(a):
-    return base64.b64decode(a.encode('utf-8')).decode('utf-8')
+    return base64.b64decode(str(a).encode('utf-8')).decode('utf-8')
 
 ################################ internal ########################
 def get_all_rules():
@@ -16,7 +16,6 @@ def get_all_rules():
     db_cursor.execute("SELECT * FROM rules ")
     data = db_cursor.fetchall()
     db_connection.close()
-    print(data)
 
 
 ################################ !internal ########################
@@ -26,25 +25,25 @@ def init_bd():
     else:
         db_connection = sqlite3.connect(f'./rules.db')
         db_cursor = db_connection.cursor()
-        db_cursor.execute(f"CREATE TABLE rules ('serverName', 'keyword', 'response')")
+        db_cursor.execute(f"CREATE TABLE rules ('serverId', 'keyword', 'response')")
         db_connection.commit()
         db_connection.close()
         return 1
 
 
 
-def save_rule(serverName, keyword, response):
+def save_rule(serverId, keyword, response):
     if not os.path.isfile("./rules.db"):
         init_bd()
 
     # no injections pls
-    serverName = b(serverName)
+    serverId = b(serverId)
     keyword = b(keyword)
     response = b(response)
 
     db_connection = sqlite3.connect(f'./rules.db')
     db_cursor = db_connection.cursor()
-    db_cursor.execute(f"INSERT INTO rules VALUES (?, ?, ?)", (serverName, keyword, response))
+    db_cursor.execute(f"INSERT INTO rules VALUES (?, ?, ?)", (serverId, keyword, response))
     db_connection.commit()
     db_connection.close()
 
@@ -52,19 +51,19 @@ def save_rule(serverName, keyword, response):
 
 
 
-def get_rules_for_server(serverName):
-    serverName = b(serverName)
+def get_rules_for_server(serverId):
+    serverId = b(serverId)
 
     db_connection = sqlite3.connect(f'./rules.db')
     db_cursor = db_connection.cursor()
-    db_cursor.execute("SELECT * FROM rules WHERE serverName = ?", (serverName,))
+    db_cursor.execute("SELECT * FROM rules WHERE serverId = ?", (serverId,))
     data = db_cursor.fetchall()
     db_connection.close()
 
     json_data = []
     for element in data:
         a = {
-            'serverName': d(element[0]),
+            'serverId': d(element[0]),
             'keyword': d(element[1]),
             'response': d(element[2])
                 }
@@ -73,17 +72,18 @@ def get_rules_for_server(serverName):
     return json_data
 
 
-def delete_rule(serverName, keyword):
-    serverName = b(serverName)
+def delete_rule(serverId, keyword):
+    serverId = b(serverId)
     keyword = b(keyword)
 
     try:
         db_connection = sqlite3.connect(f'./rules.db')
         db_cursor = db_connection.cursor()
-        db_cursor.execute("DELETE FROM rules WHERE serverName = ? AND keyword = ?", (serverName, keyword,))
+        db_cursor.execute("DELETE FROM rules WHERE serverId = ? AND keyword = ?", (serverId, keyword,))
         db_connection.commit()
         db_connection.close()
         return "deleted keyword: "+d(keyword)
     except:
         return "failed to remove keyword: "+d(keyword)
+
 
