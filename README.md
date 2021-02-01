@@ -6,6 +6,8 @@ im a discord bot,
 
 upcoming features
 =================
+## rules
+* will show which user set each rule
 
 ## reactions
 
