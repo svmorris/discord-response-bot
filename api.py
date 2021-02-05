@@ -29,7 +29,7 @@ def set_rule(text, guild_id):
     if len(text) < 2:
         return "failed to set rule, wrong number of arguments supplied (2 needed)"
 
-    keyword = text[0]
+    keyword = text[0].strip(' ')
     response = ','.join(text[1:])
 
 
