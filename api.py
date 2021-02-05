@@ -62,7 +62,7 @@ def remove_rule(text, serverId):
     rules = get_rules_for_server(serverId)
 
     for rule in rules:
-        if rule['keyword'] in text:
+        if rule['keyword'].strip(' ') in text:
             response = delete_rule(serverId, rule['keyword'])
             return limit(response)
 
