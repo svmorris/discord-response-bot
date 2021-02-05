@@ -48,7 +48,7 @@ def get_response(message):
     rules = get_rules_for_server(serverId)
 
     for rule in rules:
-        if rule['keyword'].upper() in message.content.upper():
+        if rule['keyword'].upper().strip() in message.content.upper():
             return limit(rule['response'])
 
     return False

@@ -58,5 +58,8 @@ if __name__ == "__main__":
     except:
         sys.exit(-1)
 
+    from dbhandler import init_bd
+    init_bd()
+
     # run
     client.run(token)

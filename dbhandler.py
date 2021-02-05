@@ -21,6 +21,7 @@ def get_all_rules():
 ################################ !internal ########################
 def init_bd():
     if os.path.isfile("./rules.db"):
+        print("db already exists")
         return 0
     else:
         db_connection = sqlite3.connect(f'./rules.db')
@@ -87,3 +88,5 @@ def delete_rule(serverId, keyword):
         return "failed to remove keyword: "+d(keyword)
 
 
+if __name__ == "__main__":
+    init_bd()
