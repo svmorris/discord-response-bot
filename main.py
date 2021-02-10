@@ -10,7 +10,7 @@ from api import remove_rule
 from api import get_response
 
 client = discord.Client()
-token = 'ODAxMzc3MDk2NzcyNzQ3MzI3.YAfylA.7fE4zp0h2wsQU5fjUCKf36Db0Ts'
+token = str(sys.argv[1])
 
 
 
