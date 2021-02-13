@@ -23,7 +23,13 @@ async def on_message(message):
     prefix = '//rules'
     if message.content[:len(prefix)] == prefix:
         res = get_rules(message.content[len(prefix):], message.guild.id)
-        return await message.channel.send(res)
+        if type(res) == list:
+            for a in res:
+                await message.channel.send(a)
+
+            return await message.channel.send("done")
+        else:
+            return await message.channel.send(res)
 
 
     prefix = '//rule'

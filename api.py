@@ -14,6 +14,7 @@ def escape(a):
 
 # make sure 2k chars limit is not passed
 def limit(a):
+    a = str(a)
     if len(a) > 2000:
         return "could not send message because it longer than 2000 characters :("
 
@@ -74,8 +75,9 @@ def get_rules(text, serverId):
 
     rules = get_rules_for_server(serverId)
 
-    response = ''
+    response_list = []
     for rule in rules:
+        response = ''
         key = rule['keyword']
         res = rule['response']
 
@@ -86,7 +88,9 @@ def get_rules(text, serverId):
 
         response += escape(key) + f": ```\n" + escape(res) + "\n``` \n"
 
-    if len(response) > 1:
+        response_list.append(response)
+
+    if len(response_list) > 1:
         return limit(response)
     else:
         return "no rules have been set yet"
