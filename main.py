@@ -32,10 +32,12 @@ async def on_message(message):
             return await message.channel.send(res)
 
 
+
     prefix = '//help'
     if message.content[:len(prefix)] == prefix:
         res = get_help()
         return await message.channel.send(res)
+
 
 
     # need role from here on

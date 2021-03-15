@@ -8,11 +8,18 @@ upcoming features
 =================
 ## rules
 * will show which user set each rule
+* will not display one a tthe time but properly
+
 
 ## reactions
-
 * bot should be able to react with pre-set emojis to messages
     instead of just sending a message
+
+* anyone can set
+
+
+
+
 
 
 ## admin features
