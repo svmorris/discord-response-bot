@@ -39,20 +39,17 @@ async def on_message(message):
 
 
     # need role from here on
-    if not "response_controller" in [y.name.lower() for y in message.author.roles]:
-        return;
+    if "response_controller" in [y.name.lower() for y in message.author.roles]:
+        prefix = '//rule'
+        if message.content[:len(prefix)] == prefix:
+            res = set_rule(message.content[len(prefix):], message.guild.id)
+            return await message.channel.send(res)
 
 
-    prefix = '//rule'
-    if message.content[:len(prefix)] == prefix:
-        res = set_rule(message.content[len(prefix):], message.guild.id)
-        return await message.channel.send(res)
-
-
-    prefix = '//remove'
-    if message.content[:len(prefix)] == prefix:
-        res = remove_rule(message.content[len(prefix):], message.guild.id)
-        return await message.channel.send(res)
+        prefix = '//remove'
+        if message.content[:len(prefix)] == prefix:
+            res = remove_rule(message.content[len(prefix):], message.guild.id)
+            return await message.channel.send(res)
 
 
 
