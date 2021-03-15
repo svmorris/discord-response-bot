@@ -32,6 +32,17 @@ async def on_message(message):
             return await message.channel.send(res)
 
 
+    prefix = '//help'
+    if message.content[:len(prefix)] == prefix:
+        res = get_help()
+        return await message.channel.send(res)
+
+
+    # need role from here on
+    if not "response_controller" in [y.name.lower() for y in message.author.roles]:
+        return;
+
+
     prefix = '//rule'
     if message.content[:len(prefix)] == prefix:
         res = set_rule(message.content[len(prefix):], message.guild.id)
@@ -43,11 +54,6 @@ async def on_message(message):
         res = remove_rule(message.content[len(prefix):], message.guild.id)
         return await message.channel.send(res)
 
-
-    prefix = '//help'
-    if message.content[:len(prefix)] == prefix:
-        res = get_help()
-        return await message.channel.send(res)
 
 
     response = get_response(message)
