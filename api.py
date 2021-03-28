@@ -55,16 +55,19 @@ def get_response(message):
     found = []
     for i, rule in enumerate(rules):
         if rule['keyword'].upper().strip() in message.content.upper():
-            found.append(rule.get('response'))
+            found.append({'key': rule.get('keyword'), 'res': rule.get('response')})
 
 
     if len(found) > 0:
-        longest = ''
+        longest = {}
         for i in found:
             if i:
-                if len(i) > len(longest):
+                if not longest.get('key'):
                     longest = i
-        return limit(longest)
+                elif len(str(longest.get('key'))) < len(str(i.get('key'))):
+                    print(str(longest.get('key')))
+                    longest = i
+        return limit(str(longest.get('res')))
 
 
     else:

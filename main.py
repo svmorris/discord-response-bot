@@ -21,20 +21,6 @@ async def on_message(message):
         return
 
 
-    prefix = '//rules'
-    if message.content[:len(prefix)] == prefix:
-        res = get_rules(message.content[len(prefix):], message.guild.id)
-        if type(res) == list:
-            for a in res:
-                await message.channel.send("```json\n" + a + "//The characters: \\, \` and \" have been replaced with '*'\n```")
-                time.sleep(0.5)
-
-            return await message.channel.send("done")
-        else:
-            return await message.channel.send("```json\n" + res + "\n//The characters: \\, \` and \" have been replaced with '*'\n//The characters: \\, \` and \" have been replaced with '*'\n```")
-
-
-
     prefix = '//help'
     if message.content[:len(prefix)] == prefix:
         res = get_help()
@@ -54,6 +40,20 @@ async def on_message(message):
         if message.content[:len(prefix)] == prefix:
             res = remove_rule(message.content[len(prefix):], message.guild.id)
             return await message.channel.send(res)
+
+
+        prefix = '//rules'
+        if message.content[:len(prefix)] == prefix:
+            res = get_rules(message.content[len(prefix):], message.guild.id)
+            if type(res) == list:
+                for a in res:
+                    await message.channel.send("```json\n" + a + "//The characters: \\, \` and \" have been replaced with '*'\n```")
+                    time.sleep(0.5)
+
+                return await message.channel.send("done")
+            else:
+                return await message.channel.send("```json\n" + res + "\n//The characters: \\, \` and \" have been replaced with '*'\n//The characters: \\, \` and \" have been replaced with '*'\n```")
+
 
 
     if "dont_respond" not in [y.name.lower() for y in message.author.roles]:
