@@ -1,4 +1,5 @@
 import re
+import json
 
 from dbhandler import save_rule
 from dbhandler import delete_rule
@@ -7,17 +8,20 @@ from dbhandler import get_rules_for_server
 
 ## internal, escape chars
 def escape(a):
-    a = re.sub("`", "", a)
-    a = re.sub("\*", "", a)
-    a = re.sub("_", "", a)
-    return a
+    disallowed = ['\\', '`', '"']
+    b = ''
+    for i in a:
+        if i in disallowed:
+            b += '*'
+        else:
+            b += i
+    return b
 
 # make sure 2k chars limit is not passed
 def limit(a):
     a = str(a)
     if len(a) > 2000:
         return "could not send message because it longer than 2000 characters :("
-
     return a
 
 
@@ -48,11 +52,24 @@ def get_response(message):
 
     rules = get_rules_for_server(serverId)
 
-    for rule in rules:
+    found = []
+    for i, rule in enumerate(rules):
         if rule['keyword'].upper().strip() in message.content.upper():
-            return limit(rule['response'])
+            found.append(rule.get('response'))
 
-    return False
+
+    if len(found) > 0:
+        longest = ''
+        for i in found:
+            if i:
+                if len(i) > len(longest):
+                    longest = i
+        return limit(longest)
+
+
+    else:
+        return None
+
 
 
 
@@ -70,6 +87,8 @@ def remove_rule(text, serverId):
     return "nothing to remove! :)"
 
 
+
+
 def get_rules(text, serverId):
     text = text.strip(" ")
 
@@ -77,23 +96,47 @@ def get_rules(text, serverId):
 
     response_list = []
     for rule in rules:
+        # get response, None if something is broken
+        key = str(rule.get('keyword'))
+        res = str(rule.get('response'))
+
+        # shorten responses
+        if len(key) > 50: key = key[:50] + "..."
+        if len(res) > 50: res = res[:50] + "..."
+
+
+        # add response to response_list
+        response_list.append({"key": escape(key).strip(' '), "res": escape(res).strip(' ')})
+
+
+    # format the response
+    response = json.dumps(response_list, sort_keys=True, indent=4, separators=(',', ': '), allow_nan = True)
+
+
+    # if the response is greater than 2000 chars then break it up (leaving 75 for formatting)
+    if len(response) > 2000-75:
+
+        # list holds the rules broken up into less than 2000 len blocks
+        responses = []
+        # response temporarily holds string with responses, until it is larger than 2000 and has to be cut
         response = ''
-        key = rule['keyword']
-        res = rule['response']
 
-        if len(key) > 50:
-            key = key[:50] + "..."
-        if len(res) > 20:
-            res= res[:20] + "..."
+        # loop through list to format them
+        for i in response_list:
+            # if larger than 2000 - max len of one object then cut it and append to list
+            if len(response) > 2000-215:
+                responses.append(response)
+                response = ''
+            response += json.dumps(i, sort_keys=True, indent=4, separators=(',', ': '), allow_nan = True) + ',\n'
 
-        response += escape(key) + f": ```\n" + escape(res) + "\n``` \n"
+        # append the remainder to the list
+        responses.append(response)
+        return responses
 
-        response_list.append(response)
 
-    if len(response_list) > 1:
-        return limit(response)
+    # it its less than 2000 then just return it
     else:
-        return "no rules have been set yet"
+        return response
 
 
 

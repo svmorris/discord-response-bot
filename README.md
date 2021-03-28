@@ -4,12 +4,77 @@ im a discord bot,
 
 
 
+
+About this bot
+==============
+The bot allows you to set key, value pairs which it will respond to.
+<br />
+<br />
+For example, someone sets a rule stating that the word `fuck` will be responded to by the phrase `No swearing allowed`. In this case if the letters `fuck` appears in anyones message the bot will respond with its pre-set response. Note that all words containing those four letters will also trigger a response.
+
+<br />
+<br />
+How to use the bot
+------------------
+set new rule:
+```
+  //rule <keyword> , <response>
+```
+
+check set rules:
+```
+  //rules
+```
+
+remove rule:
+```
+  //remove <keyword>
+```
+
+help menu:
+```
+  //help
+```
+
+
+### roles:
+* Only users with the `response_controller` or `admin` roles can set or remove rules
+* The bot will not respond to users with the `dont_respond` permission
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 upcoming features
 =================
 ## rules
 * will show which user set each rule
 * will not display one a tthe time but properly
-
 
 ## reactions
 * bot should be able to react with pre-set emojis to messages
