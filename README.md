@@ -14,6 +14,7 @@ For example, someone sets a rule stating that the word `fuck` will be responded 
 
 <br />
 <br />
+
 How to use the bot
 ------------------
 
