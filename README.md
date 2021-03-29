@@ -16,6 +16,7 @@ For example, someone sets a rule stating that the word `fuck` will be responded 
 <br />
 How to use the bot
 ------------------
+
 set new rule:
 ```
   //rule <keyword> , <response>
