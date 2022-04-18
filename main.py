@@ -22,10 +22,10 @@ if token is None:
 def backup_rules():
     """ Every 100 minutes, create a backup of the database """
     while True:
-        with open('storage/rules.db', 'r', encoding='UTF-8') as infile:
+        with open('storage/rules.db', 'rb') as infile:
             rulesdb = infile.read()
 
-        with open(f"storage/backup_{time.time()}.db", 'w', encoding='UTF-8') as outfile:
+        with open(f"storage/backup_{time.time()}.db", 'wb') as outfile:
             outfile.write(rulesdb)
 
         time.sleep(6000) # every 100 minutes
