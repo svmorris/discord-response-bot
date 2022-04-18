@@ -1,7 +1,9 @@
+import os
 import sys
 import discord
 import time
 import sqlite3
+import threading
 from tendo import singleton
 
 from api import get_help
@@ -11,8 +13,22 @@ from api import remove_rule
 from api import get_response
 
 client = discord.Client()
-token = str(sys.argv[1])
+token = os.getenv('TOKEN')
+if token is None:
+    print("No token supplied")
+    sys.exit(-1)
 
+
+def backup_rules():
+    """ Every 100 minutes, create a backup of the database """
+    while True:
+        with open('storage/rules.db', 'r', encoding='UTF-8') as infile:
+            rulesdb = infile.read()
+
+        with open(f"storage/backup_{time.time()}.db", 'w', encoding='UTF-8') as outfile:
+            outfile.write(rulesdb)
+
+        time.sleep(6000) # every 100 minutes
 
 
 @client.event
@@ -52,7 +68,8 @@ async def on_message(message):
 
                 return await message.channel.send("done")
             else:
-                return await message.channel.send("```json\n" + res + "\n//The characters: \\, \` and \" have been replaced with '*'\n//The characters: \\, \` and \" have been replaced with '*'\n```")
+                return await message.channel.send(
+                        "```json\n" + res + "\n//The characters: \\, \` and \" have been replaced with '*'\n//The characters: \\, \` and \" have been replaced with '*'\n```")
 
 
 
@@ -62,8 +79,9 @@ async def on_message(message):
             return await message.channel.send(response)
 
 
+
 if __name__ == "__main__":
-    #  chekc if there is another instance running
+    #  check if there is another instance running
     # this is so it can be added to cron everyminute, incase it goes down it can recover
     try:
         # will sys.exit(-1) if other instance is running
@@ -74,5 +92,9 @@ if __name__ == "__main__":
     from dbhandler import init_bd
     init_bd()
 
-    # run
+    # Run the periodic backups
+    x = threading.Thread(target=backup_rules, args=())
+    x.start()
+
+    # Run the actual bot
     client.run(token)

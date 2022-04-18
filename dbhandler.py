@@ -11,7 +11,7 @@ def d(a):
 
 ################################ internal ########################
 def get_all_rules():
-    db_connection = sqlite3.connect(f'./rules.db')
+    db_connection = sqlite3.connect(f'storage/rules.db')
     db_cursor = db_connection.cursor()
     db_cursor.execute("SELECT * FROM rules ")
     data = db_cursor.fetchall()
@@ -20,11 +20,11 @@ def get_all_rules():
 
 ################################ !internal ########################
 def init_bd():
-    if os.path.isfile("./rules.db"):
+    if os.path.isfile("storage/rules.db"):
         print("db already exists")
         return 0
     else:
-        db_connection = sqlite3.connect(f'./rules.db')
+        db_connection = sqlite3.connect(f'storage/rules.db')
         db_cursor = db_connection.cursor()
         db_cursor.execute(f"CREATE TABLE rules ('serverId', 'keyword', 'response')")
         db_connection.commit()
@@ -34,7 +34,7 @@ def init_bd():
 
 
 def save_rule(serverId, keyword, response):
-    if not os.path.isfile("./rules.db"):
+    if not os.path.isfile("storage/rules.db"):
         init_bd()
 
     # no injections pls
@@ -42,7 +42,7 @@ def save_rule(serverId, keyword, response):
     keyword = b(keyword)
     response = b(response)
 
-    db_connection = sqlite3.connect(f'./rules.db')
+    db_connection = sqlite3.connect(f'storage/rules.db')
     db_cursor = db_connection.cursor()
     db_cursor.execute(f"INSERT INTO rules VALUES (?, ?, ?)", (serverId, keyword, response))
     db_connection.commit()
@@ -55,7 +55,7 @@ def save_rule(serverId, keyword, response):
 def get_rules_for_server(serverId):
     serverId = b(serverId)
 
-    db_connection = sqlite3.connect(f'./rules.db')
+    db_connection = sqlite3.connect(f'storage/rules.db')
     db_cursor = db_connection.cursor()
     db_cursor.execute("SELECT * FROM rules WHERE serverId = ?", (serverId,))
     data = db_cursor.fetchall()
@@ -78,7 +78,7 @@ def delete_rule(serverId, keyword):
     keyword = b(keyword)
 
     try:
-        db_connection = sqlite3.connect(f'./rules.db')
+        db_connection = sqlite3.connect(f'storage/rules.db')
         db_cursor = db_connection.cursor()
         db_cursor.execute("DELETE FROM rules WHERE serverId = ? AND keyword = ?", (serverId, keyword,))
         db_connection.commit()

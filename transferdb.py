@@ -10,10 +10,10 @@ def d(a):
     return base64.b64decode(str(a).encode('utf-8')).decode('utf-8')
 
 
-if os.path.isfile("./rules_withID.db"):
+if os.path.isfile("storage/rules_withID.db"):
     pass
 else:
-    db_connection = sqlite3.connect(f'./rules_withID.db')
+    db_connection = sqlite3.connect(f'storage/rules_withID.db')
     db_cursor = db_connection.cursor()
     db_cursor.execute(f"CREATE TABLE rules ('serverId', 'keyword', 'response')")
     db_connection.commit()
@@ -21,7 +21,7 @@ else:
 
 
 
-db_connection = sqlite3.connect(f'./rules.db')
+db_connection = sqlite3.connect('storage/rules.db')
 db_cursor = db_connection.cursor()
 db_cursor.execute("SELECT * FROM rules WHERE serverName = ?", (b("TEAM0001"),))
 data = db_cursor.fetchall()
